@@ -1,0 +1,6 @@
+{
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json": "file:///home/tim/OneDrive/Personal_Code_projects/minimaddit/alphaadvantagecache/openapi_specification.yaml"
+  },
+  "rust-analyzer.linkedProjects": ["./Cargo.toml"]
+}
