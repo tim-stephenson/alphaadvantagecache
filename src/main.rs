@@ -1,9 +1,10 @@
 mod get_treasury_data;
 use get_treasury_data::TreasuryBillRates;
+use tower_http::cors::{Any, CorsLayer};
 
 use axum::{
     routing::{get},
-    http::{StatusCode},
+    http::{StatusCode, Method, HeaderValue},
     Json, Router,
 };
 
@@ -24,7 +25,12 @@ async fn main() {
 
     // build our application with a route
     let app = Router::new()
-        .route("/treasury_bill_rates", get(treasury_bill_rates_handler) );
+        .route("/treasury_bill_rates", get(treasury_bill_rates_handler) )
+          .layer(
+        CorsLayer::new()
+        .allow_origin("http://localhost:9500".parse::<HeaderValue>().unwrap())
+        .allow_methods([Method::GET])
+    );
 
     // run our app with hyper
     // `axum::Server` is a re-export of `hyper::Server`
