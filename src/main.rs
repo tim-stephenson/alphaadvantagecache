@@ -1,6 +1,6 @@
 mod get_treasury_data;
 use get_treasury_data::TreasuryBillRates;
-use tower_http::cors::{Any, CorsLayer};
+use tower_http::cors::CorsLayer;
 
 use axum::{
     routing::{get},
@@ -25,7 +25,7 @@ async fn main() {
 
     // build our application with a route
     let app = Router::new()
-        .route("/treasury_bill_rates", get(treasury_bill_rates_handler) )
+        .route("/treasury_yield_curve", get(treasury_bill_rates_handler) )
           .layer(
         CorsLayer::new()
         .allow_origin("http://localhost:9500".parse::<HeaderValue>().unwrap())

@@ -21,7 +21,7 @@ pub enum TreasuryBillDataError{
 
 fn get_url(date : DateTime<Utc> ) -> Result<Url, ParseError> {
     let date_string = date.format("%Y%m").to_string();
-    return Url::parse_with_params(BASEURL, &[("data", "daily_treasury_bill_rates"), ("field_tdr_date_value_month", date_string.as_str())] );
+    return Url::parse_with_params(BASEURL, &[("data", "daily_treasury_yield_curve"), ("field_tdr_date_value_month", date_string.as_str())] );
 }
 
 
@@ -78,21 +78,28 @@ pub async fn get_data() -> Result<Json<TreasuryBillRates> , TreasuryBillDataErro
 
 
 
-const FIELD_VALUES : [&str; 7] = ["ROUND_B1_YIELD_4WK_2","ROUND_B1_YIELD_8WK_2","ROUND_B1_YIELD_13WK_2","ROUND_B1_YIELD_17WK_2","ROUND_B1_YIELD_26WK_2", "ROUND_B1_YIELD_52WK_2","INDEX_DATE"];
+const FIELD_VALUES : [&str; 14] = ["BC_1MONTH","BC_2MONTH","BC_3MONTH","BC_4MONTH","BC_6MONTH", "BC_1YEAR","BC_2YEAR","BC_3YEAR","BC_5YEAR","BC_7YEAR","BC_10YEAR","BC_20YEAR","BC_30YEAR","updated"];
 
 #[derive(Debug,Serialize)]
 pub struct TreasuryBillRates{
-    ROUND_B1_YIELD_4WK_2 : String,
-    ROUND_B1_YIELD_8WK_2 : String,
-    ROUND_B1_YIELD_13WK_2 : String,
-    ROUND_B1_YIELD_17WK_2 : String,
-    ROUND_B1_YIELD_26WK_2 : String,
-    ROUND_B1_YIELD_52WK_2 : String,
-    INDEX_DATE : String
+    BC_1MONTH : String,
+    BC_2MONTH : String,
+    BC_3MONTH : String,
+    BC_4MONTH : String,
+    BC_6MONTH : String, 
+    BC_1YEAR : String,
+    BC_2YEAR : String,
+    BC_3YEAR : String,
+    BC_5YEAR : String,
+    BC_7YEAR : String,
+    BC_10YEAR : String,
+    BC_20YEAR : String,
+    BC_30YEAR : String,
+    updated : String
 }
 
 
-// From https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView
+// From https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value_month=202306
 pub fn parse_treasury_xml(input : Bytes) -> Result<Json<TreasuryBillRates> , TreasuryBillDataError >{
     let stream = BufReader::new(input.as_ref());
     let parser = EventReader::new(stream);
@@ -125,34 +132,62 @@ pub fn parse_treasury_xml(input : Bytes) -> Result<Json<TreasuryBillRates> , Tre
         return Err(TreasuryBillDataError::NoEntries);
     }
     let mut rates_struct = TreasuryBillRates{
-        ROUND_B1_YIELD_4WK_2 : String::new(),
-        ROUND_B1_YIELD_8WK_2 : String::new(),
-        ROUND_B1_YIELD_13WK_2 : String::new(),
-        ROUND_B1_YIELD_17WK_2 : String::new(),
-        ROUND_B1_YIELD_26WK_2 : String::new(),
-        ROUND_B1_YIELD_52WK_2 : String::new(),
-        INDEX_DATE : String::new()
+        BC_1MONTH : String::new(),
+        BC_2MONTH : String::new(),
+        BC_3MONTH : String::new(),
+        BC_4MONTH : String::new(),
+        BC_6MONTH : String::new(),
+        BC_1YEAR : String::new(),
+        BC_2YEAR : String::new(),
+        BC_3YEAR : String::new(),
+        BC_5YEAR : String::new(),
+        BC_7YEAR : String::new(),
+        BC_10YEAR : String::new(),
+        BC_20YEAR : String::new(),
+        BC_30YEAR : String::new(),
+        updated : String::new()
     };
-    if let Some(v) = rates.get("ROUND_B1_YIELD_4WK_2"){
-        rates_struct.ROUND_B1_YIELD_4WK_2 = v.to_string();
+    if let Some(v) = rates.get("BC_1MONTH"){
+        rates_struct.BC_1MONTH = v.to_string();
     }
-    if let Some(v) = rates.get("ROUND_B1_YIELD_8WK_2"){
-        rates_struct.ROUND_B1_YIELD_8WK_2 = v.to_string();
+    if let Some(v) = rates.get("BC_2MONTH"){
+        rates_struct.BC_2MONTH = v.to_string();
     }
-    if let Some(v) = rates.get("ROUND_B1_YIELD_13WK_2"){
-        rates_struct.ROUND_B1_YIELD_13WK_2 = v.to_string();
+    if let Some(v) = rates.get("BC_3MONTH"){
+        rates_struct.BC_3MONTH = v.to_string();
     }
-    if let Some(v) = rates.get("ROUND_B1_YIELD_17WK_2"){
-        rates_struct.ROUND_B1_YIELD_17WK_2 = v.to_string();
+    if let Some(v) = rates.get("BC_4MONTH"){
+        rates_struct.BC_4MONTH = v.to_string();
     }
-    if let Some(v) = rates.get("ROUND_B1_YIELD_26WK_2"){
-        rates_struct.ROUND_B1_YIELD_26WK_2 = v.to_string();
+    if let Some(v) = rates.get("BC_6MONTH"){
+        rates_struct.BC_6MONTH = v.to_string();
     }
-    if let Some(v) = rates.get("ROUND_B1_YIELD_52WK_2"){
-        rates_struct.ROUND_B1_YIELD_52WK_2 = v.to_string();
+    if let Some(v) = rates.get("BC_1YEAR"){
+        rates_struct.BC_1YEAR = v.to_string();
     }
-    if let Some(v) = rates.get("INDEX_DATE"){
-        rates_struct.INDEX_DATE = v.to_string();
+    if let Some(v) = rates.get("BC_2YEAR"){
+        rates_struct.BC_2YEAR = v.to_string();
+    }
+    if let Some(v) = rates.get("BC_3YEAR"){
+        rates_struct.BC_3YEAR = v.to_string();
+    }
+    if let Some(v) = rates.get("BC_5YEAR"){
+        rates_struct.BC_5YEAR = v.to_string();
+    }
+    if let Some(v) = rates.get("BC_7YEAR"){
+        rates_struct.BC_7YEAR = v.to_string();
+    }
+    if let Some(v) = rates.get("BC_10YEAR"){
+        rates_struct.BC_10YEAR = v.to_string();
+    }
+    if let Some(v) = rates.get("BC_20YEAR"){
+        rates_struct.BC_20YEAR = v.to_string();
+    }
+    if let Some(v) = rates.get("BC_30YEAR"){
+        rates_struct.BC_30YEAR = v.to_string();
+    }
+    if let Some(v) = rates.get("updated"){
+        rates_struct.updated = v.to_string();
     }
     return Ok( Json(rates_struct) );
 }
